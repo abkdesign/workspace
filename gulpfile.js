@@ -14,14 +14,11 @@ var gulp         = require("gulp"),
 
 var dest_js = "./js/uglify";
 var dest_ts = "js/build";
-var dest_css = ".";
+var dest_css = "css";
 var src_sass = "scss/**/*.scss";
 var src_js = "js/**/*.js";
 var src_ts = "js/**/*.ts";
-var files = [
-    src_sass,
-    './**/*.html'
-];
+
 //------------------------------------------------------------
 
 // SASS TO CSS
