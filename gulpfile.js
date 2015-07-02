@@ -6,7 +6,6 @@ var gulp         = require("gulp"),
     minify_css   = require("gulp-minify-css"),
     uglify       = require("gulp-uglify"),
     prefixer     = require("gulp-autoprefixer"),
-    imagemin     = require("gulp-imagemin"),
 	browserSync  = require("browser-sync"),
 	typeScript   = require("gulp-typescript"),
 	sourceMaps   = require("gulp-sourcemaps");
@@ -16,11 +15,9 @@ var gulp         = require("gulp"),
 var dest_js = "./js/uglify";
 var dest_ts = "js/build";
 var dest_css = ".";
-var dest_img = "assets/build/img";
 var src_sass = "scss/**/*.scss";
 var src_js = "js/**/*.js";
 var src_ts = "js/**/*.ts";
-var src_img = "assets/img/**/*";
 var files = [
     src_sass,
     './**/*.html'
@@ -59,12 +56,7 @@ gulp.task('js', function(){
         .pipe(concat('app.min.js'))
         .pipe(gulp.dest(dest_js));
 });
-// Compile image
-gulp.task('image', function(){
-    return gulp.src(src_img)
-        .pipe(imagemin())
-        .pipe(gulp.dest(dest_img));
-});
+
 // Compile Typescript
 gulp.task('typescript', function(){
 	return gulp.src(src_ts)

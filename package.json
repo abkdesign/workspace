@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "browser-sync": "2.2.3",
-    "gulp-imagemin": "^2.2.1",
     "gulp-sourcemaps": "^1.5.1"
   }
 }
