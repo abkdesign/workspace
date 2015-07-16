@@ -12,15 +12,26 @@ var gulp         = require("gulp"),
     
 //------------------------------------------------------------
 
-var dest_js = "./js/uglify";
+var dest_js = "js/build";
 var dest_ts = "js/build";
 var dest_css = "css";
 var src_sass = "scss/**/*.scss";
-var src_js = "js/**/*.js";
+var src_js = "js/dev/**/*.js";
 var src_ts = "js/**/*.ts";
+var src_scripts = "js/build/**/*.js";
+var src_css = "css/*.css";
 
+var indexFile = "index.html";
+var base = {base: './'};
+var dist = "dist";
 //------------------------------------------------------------
-
+gulp.task('html', function(){
+    var assets = userref.assets();
+   gulp.src(options.src + indexFile)
+       .pipe(uglify('app.min.js'))
+       .pipe(assets);
+    gulp.dest(options.dist);
+});
 // SASS TO CSS
 gulp.task('single', function(){
    return gulp.src('scss/style.scss')
@@ -45,7 +56,7 @@ gulp.task('sass', function(){
     .pipe(gulp.dest(dest_css))
 	.pipe(browserSync.reload({stream:true}));
 });
-// Compile JS
+// Compile concat js
 gulp.task('js', function(){
     return gulp.src(src_js)
         .pipe(plumber())
@@ -70,7 +81,13 @@ gulp.task('watch', function(){
 	 gulp.watch(src_ts,['typescript']);
 });
 
+gulp.task('build', ['sass', 'js'], function(){
+   return gulp.src([src_scripts, src_css, indexFile], base)
+       .pipe(gulp.dest(dist));
+});
 // Watch default 
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['sass', 'js'], function(){
+    gulp.start('watch');
+});
 //------------------------------------------------------------
 
