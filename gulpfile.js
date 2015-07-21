@@ -9,7 +9,7 @@ var gulp         = require("gulp"),
 	browserSync  = require("browser-sync"),
 	typeScript   = require("gulp-typescript"),
 	sourceMaps   = require("gulp-sourcemaps");
-    
+
 //------------------------------------------------------------
 
 var dest_js = "js/build";
@@ -25,13 +25,6 @@ var indexFile = "index.html";
 var base = {base: './'};
 var dist = "dist";
 //------------------------------------------------------------
-gulp.task('html', function(){
-    var assets = userref.assets();
-   gulp.src(options.src + indexFile)
-       .pipe(uglify('app.min.js'))
-       .pipe(assets);
-    gulp.dest(options.dist);
-});
 // SASS TO CSS
 gulp.task('single', function(){
    return gulp.src('scss/style.scss')
@@ -42,7 +35,7 @@ gulp.task('single', function(){
     .pipe(gulp.dest(dest_css))
     .pipe(minify_css())
     .pipe(gulp.dest(dest_css))
-    .pipe(browserSync.reload({stream:true}));
+    .pipe(browserSync.stream());
 });
 // only save style sass
 gulp.task('sass', function(){
@@ -54,7 +47,7 @@ gulp.task('sass', function(){
     .pipe(gulp.dest(dest_css))
 	.pipe(sourceMaps.write('./'))
     .pipe(gulp.dest(dest_css))
-	.pipe(browserSync.reload({stream:true}));
+    .pipe(browserSync.stream());
 });
 // Compile concat js
 gulp.task('js', function(){
@@ -70,24 +63,31 @@ gulp.task('typescript', function(){
 	return gulp.src(src_ts)
 		.pipe(plumber())
 		.pipe(typeScript())
-		.pipe(gulp.dest(dest_ts))
-	    .pipe(browserSync.reload({stream:true}));
+		.pipe(gulp.dest(dest_ts));
 });
+gulp.task('browser-sync',['sass'], function() {
+    browserSync.init([src_sass], {
+        server: {
+            baseDir: "./"
+        }
+    });
+});
+
 // WATCH tasks
 gulp.task('watch', function(){
 
      //gulp.watch(src_js, ['js']);
      gulp.watch(src_sass,['sass']);
 	 gulp.watch(src_ts,['typescript']);
+     gulp.watch("*.html").on("change", browserSync.reload);
 });
 
 gulp.task('build', ['sass', 'js'], function(){
    return gulp.src([src_scripts, src_css, indexFile], base)
        .pipe(gulp.dest(dist));
 });
-// Watch default 
-gulp.task('default', ['sass', 'js'], function(){
+// Watch default
+gulp.task('default', ['sass', 'js','browser-sync'], function(){
     gulp.start('watch');
 });
-//------------------------------------------------------------
-
+//-----------------------------------------------------------
