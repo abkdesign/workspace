@@ -8,6 +8,8 @@ var gulp         = require("gulp"),
     prefixer     = require("gulp-autoprefixer"),
 	browserSync  = require("browser-sync"),
 	typeScript   = require("gulp-typescript"),
+    babel        = require("gulp-babel"),
+    clean        = require("gulp-clean"),
 	sourceMaps   = require("gulp-sourcemaps");
 
 //------------------------------------------------------------
@@ -23,11 +25,11 @@ var src_css = "css/*.css";
 
 var indexFile = "index.html";
 var base = {base: './'};
-var dist = "dist";
+var dist = "./dist";
 //------------------------------------------------------------
 // SASS TO CSS
 gulp.task('single', function(){
-   return gulp.src('scss/style.scss')
+   return gulp.src('scss/application.scss')
     .pipe(plumber())
     .pipe(sass())
     .pipe(prefixer('last 2 versions'))
@@ -72,6 +74,18 @@ gulp.task('browser-sync',['sass'], function() {
         }
     });
 });
+// es6 -babel
+gulp.task('babel',function(){
+    return gulp.src(src_ts)
+        .pipe(plumber())
+        .pipe(babel())
+        .pipe(gulp.dest(dest_ts));
+});
+//clean
+gulp.task('clean', function(){
+    return gulp.src(dist, {read: false})
+        .pipe(clean());
+});
 
 // WATCH tasks
 gulp.task('watch', function(){
@@ -82,7 +96,7 @@ gulp.task('watch', function(){
      gulp.watch("*.html").on("change", browserSync.reload);
 });
 
-gulp.task('build', ['sass', 'js'], function(){
+gulp.task('build', ['clean', 'single', 'js'], function(){
    return gulp.src([src_scripts, src_css, indexFile], base)
        .pipe(gulp.dest(dist));
 });
